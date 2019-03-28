@@ -26,11 +26,28 @@ var data =   {
           {
             "name": "Node7",
             "parent": "Node3"
-          }
+        },
+        {
+          "name": "Node8",
+          "parent": "Node3"
+        },
+        {
+            "name": "Node9",
+            "parents": [
+            {
+                "name": "Node15",
+                "parent": "Node3"
+            },
+            {
+                "name": "Node16",
+                "parent": "Node3"
+            }
+            ]
+        }
         ]
       },
       {
-        "name": "Node8",
+        "name": "Node10",
         "parent": "Node1"
     }
     ]
