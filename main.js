@@ -56,7 +56,7 @@ var data =   {
 
 var svg = d3.select("body").append("svg")
     .attr("width", "100%")
-    .attr("height", "100%");
+    .attr("height", "120%");
 
 
 // Draw dependency diagram
