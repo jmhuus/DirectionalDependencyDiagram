@@ -41,6 +41,10 @@ var data =   {
             {
                 "name": "Node16",
                 "parent": "Node3"
+            },
+            {
+                "name": "Node17",
+                "parent": "Node3"
             }
             ]
         }
@@ -97,9 +101,7 @@ function buildDiagram(source, svg){
         // Draw line between parent and root
         svg.append("path")
             .attr("d", lineFunction([{"x":parent.x, "y":parent.y}, {"x":root.x, "y":root.y}]))
-            .attr("stroke", "blue")
-            .attr("stroke-width", 2)
-            .attr("fill", "none");
+            .attr("class", "line");
 
         svg.append("circle")
             .attr("cx", parent.x)
@@ -124,9 +126,7 @@ function buildDiagram(source, svg){
         // Draw line between child and root
         svg.append("path")
             .attr("d", lineFunction([{"x":child.x, "y":child.y}, {"x":root.x, "y":root.y}]))
-            .attr("stroke", "blue")
-            .attr("stroke-width", 2)
-            .attr("fill", "none");
+            .attr("class", "line");
 
         // Draw node
         svg.append("circle")
