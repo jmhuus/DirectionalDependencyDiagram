@@ -58,6 +58,12 @@ var svg = d3.select("body").append("svg")
     .attr("width", "100%")
     .attr("height", "120%");
 
+//This is the accessor function we talked about above
+var lineFunction = d3.line()
+        .x(function(d) { return d.x; })
+        .y(function(d) { return d.y; });
+
+
 
 // Draw dependency diagram
 buildDiagram(data, svg);
@@ -88,12 +94,20 @@ function buildDiagram(source, svg){
         parent.x = root.x-50+(pos*50);
         parent.y = root.y-50;
 
+        // Draw line between parent and root
+        svg.append("path")
+            .attr("d", lineFunction([{"x":parent.x, "y":parent.y}, {"x":root.x, "y":root.y}]))
+            .attr("stroke", "blue")
+            .attr("stroke-width", 2)
+            .attr("fill", "none");
+
         svg.append("circle")
             .attr("cx", parent.x)
             .attr("cy", parent.y)
             .attr("r", 10)
             .attr("class", "parent")
             .attr("name", parent.name);
+
 
         if(parent.parents){
             parent.parents.forEach(function(d, i){
@@ -107,6 +121,14 @@ function buildDiagram(source, svg){
         child.x = root.x-50+(pos*50);
         child.y = root.y+50;
 
+        // Draw line between child and root
+        svg.append("path")
+            .attr("d", lineFunction([{"x":child.x, "y":child.y}, {"x":root.x, "y":root.y}]))
+            .attr("stroke", "blue")
+            .attr("stroke-width", 2)
+            .attr("fill", "none");
+
+        // Draw node
         svg.append("circle")
             .attr("cx", child.x)
             .attr("cy", child.y)
