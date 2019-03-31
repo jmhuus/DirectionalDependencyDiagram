@@ -1,63 +1,49 @@
-var data =   {
-    "name": "Node1",
-    "parents": [
-        {
-            "name": "Node2",
-            "parent": "Node1"
-        },
-        {
-            "name": "Node3",
-            "parent": "Node1"
-        },
-    ],
-    "children": [
-      {
-        "name": "Node4",
-        "parent": "Node1",
-        "children": [
-          {
-            "name": "Node5",
-            "parent": "Node2"
-          },
-          {
-            "name": "Node6",
-            "parent": "Node3"
-          },
-          {
-            "name": "Node7",
-            "parent": "Node3"
-        },
-        {
-          "name": "Node8",
-          "parent": "Node3"
-        },
-        {
-            "name": "Node9",
-            "parents": [
-            {
-                "name": "Node15",
-                "parent": "Node3"
-            },
-            {
-                "name": "Node16",
-                "parent": "Node3"
-            },
-            {
-                "name": "Node17",
-                "parent": "Node3"
-            }
-            ]
-        }
-        ]
-      },
-      {
-        "name": "Node10",
-        "parent": "Node1"
+var nodes = [
+    {
+        "name": "Node1",
+        "id": 1,
+        "isTrunk": true,
+        "x": null,
+        "y": null
+    },
+    {
+        "name": "Node2",
+        "id": 2,
+        "isTrunk": true,
+        "x": null,
+        "y": null
+    },
+    {
+        "name": "Node3",
+        "id": 3,
+        "isTrunk": false,
+        "x": null,
+        "y": null
     }
-    ]
-};
+];
+
+var links = [
+    {
+        "source": 1,
+        "target": 2
+    },
+    {
+        "source": 1,
+        "target": 3
+    }
+];
+
+// Draw tree tree trunk
+nodes.forEach(function(node){
+    var startingX = 300,
+        startingY = 300;
+    if(node.isTrunk){
+        drawNode()
+    }
+});
 
 
+// Diagram container
 var svg = d3.select("body").append("svg")
     .attr("width", "100%")
     .attr("height", "120%");
@@ -68,83 +54,74 @@ var lineFunction = d3.line()
         .y(function(d) { return d.y; });
 
 
-
-// Draw dependency diagram
-buildDiagram(data, svg);
-
-function buildDiagram(source, svg){
-    var startingX = 500,
-        startingY = 500;
-
-    source.x = startingX;
-    source.y = startingY;
-
-    svg.append("circle")
-        .attr("cx", startingX)
-        .attr("cy", startingY)
-        .attr("r", 10)
-        .attr("name", source.name);
-
-    source.parents.forEach(function(d, i){
-        drawParents(source, d, i+1, svg);
-    });
-
-    source.children.forEach(function(d, i){
-        drawChildren(source, d, i+1, svg);
-    });
-
-    function drawParents(root, parent, pos, svg){
-
-        parent.x = root.x-50+(pos*50);
-        parent.y = root.y-50;
-
-        // Draw line between parent and root
-        svg.append("path")
-            .attr("d", lineFunction([{"x":parent.x, "y":parent.y}, {"x":root.x, "y":root.y}]))
-            .attr("class", "line");
-
-        svg.append("circle")
-            .attr("cx", parent.x)
-            .attr("cy", parent.y)
-            .attr("r", 10)
-            .attr("class", "parent")
-            .attr("name", parent.name);
-
-
-        if(parent.parents){
-            parent.parents.forEach(function(d, i){
-                drawChildren(parent, d, i, svg);
-            });
+nodes.forEach(function(node){
+    // Parent nodes
+    links.forEach(function(link){
+        if(node.id == link.target){
+            if(getNodeById(link.source).x == null){
+                // Draw line, draw node, store node location
+                var sourceLocation = getNewSourceLocation(node);
+                drawLine([node.x, node.y], sourceLocation);
+                drawNode(sourceLocation);
+                getNodeById(link.source).x = sourceLocation[0];
+                getNodeById(link.source).y = sourceLocation[1];
+            } else {
+                // Draw line between existin nodes
+                var sourceLocation = [getNodeById(link.source).x, getNodeById(link.source).x];
+                drawLine([node.x, node.y], sourceLocation);
+            }
         }
-    }
 
-    function drawChildren(root, child, pos, svg){
-
-        child.x = root.x-50+(pos*50);
-        child.y = root.y+50;
-
-        // Draw line between child and root
-        svg.append("path")
-            .attr("d", lineFunction([{"x":child.x, "y":child.y}, {"x":root.x, "y":root.y}]))
-            .attr("class", "line");
-
-        // Draw node
-        svg.append("circle")
-            .attr("cx", child.x)
-            .attr("cy", child.y)
-            .attr("r", 10)
-            .attr("class", "child")
-            .attr("name", child.name);
-
-        if(child.children){
-            child.children.forEach(function(d, i){
-                drawChildren(child, d, i, svg);
-            });
+        if(node.id == link.source){
+            if(getNodeById(link.target).x == null){
+                var targetLocation = getNewTargetLocation(node);
+                drawLine([node.x, node.y], targetLocation);
+                drawNode(targetLocation);
+                getNodeById(link.target).x = targetLocation[0];
+                getNodeById(link.target).y = targetLocation[1];
+            } else {
+                var targetLocation = [getNodeById(link.target).x, getNodeById(link.target.y)];
+                drawLine([node.x, node.y], targetLocation);
+            }
         }
-    }
+    });
+});
 
+
+function drawNode(svgContainer, location){
+    svgContainer.append("circle")
+        .attr("cx", location[0])
+        .attr("cy", location[1])
+        .attr("r", 10);
 }
 
+
+function getNodeById(id, links){
+    links.forEach(function(d){
+        if(d.id == id){
+            return d;
+        }
+    })
+}
+
+
+function drawLine(svg, location1, location2){
+    svg.append("path")
+        .attr("d", lineFunction([{"x":location1[0], "y":location1[1]}, {"x":location2[0], "y":location2[1]}]))
+        .attr("class", "line");
+}
+
+
+function getNewSourceLocation(node){
+    // TODO: determine where node sould exist based on other nodes
+    return [node.x + 10, node.y - 50];
+}
+
+
+function getNewTargetLocation(node){
+    // TODO: determine where node sould exist based on other nodes
+    return [node.x + 10, node.y + 50];
+}
 
 
 
