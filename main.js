@@ -57,11 +57,12 @@ nodes.forEach(function(node){
     // Parent nodes
     links.forEach(function(link){
         if(node.id == link.target){
+            console.log("parent found: "+node.id);
             if(getNodeById(link.source).x == null){
                 // Draw line, draw node, store node location
                 var sourceLocation = getNewSourceLocation(node);
                 drawLine([node.x, node.y], sourceLocation);
-                drawNode(sourceLocation);
+                drawNode(sourceLocation, node);
                 getNodeById(link.source).x = sourceLocation[0];
                 getNodeById(link.source).y = sourceLocation[1];
             } else {
@@ -72,10 +73,11 @@ nodes.forEach(function(node){
         }
 
         if(node.id == link.source){
+            console.log("child found: "+node.id);
             if(getNodeById(link.target).x == null){
                 var targetLocation = getNewTargetLocation(node);
                 drawLine([node.x, node.y], targetLocation);
-                drawNode(targetLocation);
+                drawNode(targetLocation, node);
                 getNodeById(link.target).x = targetLocation[0];
                 getNodeById(link.target).y = targetLocation[1];
             } else {
@@ -87,11 +89,16 @@ nodes.forEach(function(node){
 });
 
 
-function drawNode(location){
+function drawNode(location, node){
     svg.append("circle")
         .attr("cx", location[0])
         .attr("cy", location[1])
         .attr("r", 10);
+
+    svg.append("text")
+        .attr("x", location[0]+15)
+        .attr("y", location[1]+5)
+        .text(node.name);
 }
 
 
@@ -114,13 +121,13 @@ function drawLine(location1, location2){
 
 function getNewSourceLocation(node){
     // TODO: determine where node sould exist based on other nodes
-    return [node.x + 10, node.y - 50];
+    return [node.x + 100, node.y - 150];
 }
 
 
 function getNewTargetLocation(node){
     // TODO: determine where node sould exist based on other nodes
-    return [node.x + 10, node.y + 50];
+    return [node.x + 100, node.y + 150];
 }
 
 
