@@ -33,20 +33,19 @@ var links = [
     }
 ];
 
+// Diagram container
+var svg = d3.select("body").append("svg")
+    .attr("width", "100%")
+    .attr("height", "120%");
+
 // Draw tree tree trunk
 nodes.forEach(function(node){
     var startingX = 300,
         startingY = 300;
     if(node.isTrunk){
-        drawNode()
+        drawNode(svg, [startingX, startingY]);
     }
 });
-
-
-// Diagram container
-var svg = d3.select("body").append("svg")
-    .attr("width", "100%")
-    .attr("height", "120%");
 
 //This is the accessor function we talked about above
 var lineFunction = d3.line()
@@ -88,24 +87,25 @@ nodes.forEach(function(node){
 });
 
 
-function drawNode(svgContainer, location){
-    svgContainer.append("circle")
+function drawNode(location){
+    svg.append("circle")
         .attr("cx", location[0])
         .attr("cy", location[1])
         .attr("r", 10);
 }
 
 
-function getNodeById(id, links){
-    links.forEach(function(d){
-        if(d.id == id){
-            return d;
+function getNodeById(id){
+    var i;
+    for(i=0; i<nodes.length; i++){
+        if(nodes[i].id == id){
+            return nodes[i];
         }
-    })
+    }
 }
 
 
-function drawLine(svg, location1, location2){
+function drawLine(location1, location2){
     svg.append("path")
         .attr("d", lineFunction([{"x":location1[0], "y":location1[1]}, {"x":location2[0], "y":location2[1]}]))
         .attr("class", "line");
