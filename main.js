@@ -55,37 +55,38 @@ var lineFunction = d3.line()
 
 nodes.forEach(function(node){
     // Parent nodes
-    links.forEach(function(link){
-        if(node.id == link.target){
+    var x;
+    for(x=0; x<links.length; x++){
+        if(node.id == links[x].target){
             console.log("parent found: "+node.id);
-            if(getNodeById(link.source).x == null){
+            if(getNodeById(links[x].source).x == null){
                 // Draw line, draw node, store node location
                 var sourceLocation = getNewSourceLocation(node);
                 drawLine([node.x, node.y], sourceLocation);
                 drawNode(sourceLocation, node);
-                getNodeById(link.source).x = sourceLocation[0];
-                getNodeById(link.source).y = sourceLocation[1];
+                getNodeById(links[x].source).x = sourceLocation[0];
+                getNodeById(links[x].source).y = sourceLocation[1];
             } else {
                 // Draw line between existin nodes
-                var sourceLocation = [getNodeById(link.source).x, getNodeById(link.source).x];
+                var sourceLocation = [getNodeById(links[x].source).x, getNodeById(links[x].source).x];
                 drawLine([node.x, node.y], sourceLocation);
             }
         }
 
-        if(node.id == link.source){
+        if(node.id == links[x].source){
             console.log("child found: "+node.id);
-            if(getNodeById(link.target).x == null){
+            if(getNodeById(links[x].target).x == null){
                 var targetLocation = getNewTargetLocation(node);
                 drawLine([node.x, node.y], targetLocation);
                 drawNode(targetLocation, node);
-                getNodeById(link.target).x = targetLocation[0];
-                getNodeById(link.target).y = targetLocation[1];
+                getNodeById(links[x].target).x = targetLocation[0];
+                getNodeById(links[x].target).y = targetLocation[1];
             } else {
-                var targetLocation = [getNodeById(link.target).x, getNodeById(link.target.y)];
+                var targetLocation = [getNodeById(links[x].target).x, getNodeById(links[x].target.y)];
                 drawLine([node.x, node.y], targetLocation);
             }
         }
-    });
+    }
 });
 
 
