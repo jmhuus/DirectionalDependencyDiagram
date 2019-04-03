@@ -7,7 +7,7 @@ var nodes = [
     {
         "name": "Node2",
         "id": 2,
-        "isTrunk": true
+        "isTrunk": false
     },
     {
         "name": "Node3",
@@ -17,6 +17,46 @@ var nodes = [
     {
         "name": "Node4",
         "id": 4,
+        "isTrunk": true
+    },
+    {
+        "name": "Node5",
+        "id": 5,
+        "isTrunk": false
+    },
+    {
+        "name": "Node6",
+        "id": 6,
+        "isTrunk": true
+    },
+    {
+        "name": "Node7",
+        "id": 7,
+        "isTrunk": false
+    },
+    {
+        "name": "Node8",
+        "id": 8,
+        "isTrunk": false
+    },
+    {
+        "name": "Node9",
+        "id": 9,
+        "isTrunk": true
+    },
+    {
+        "name": "Node10",
+        "id": 10,
+        "isTrunk": false
+    },
+    {
+        "name": "Node11",
+        "id": 11,
+        "isTrunk": false
+    },
+    {
+        "name": "Node12",
+        "id": 12,
         "isTrunk": false
     }
 ];
@@ -29,13 +69,49 @@ var links = [
     {
         "source": 1,
         "target": 3
+    },
+    {
+        "source": 1,
+        "target": 4
+    },
+    {
+        "source": 4,
+        "target": 5
+    },
+    {
+        "source": 4,
+        "target": 6
+    },
+    {
+        "source": 4,
+        "target": 7
+    },
+    {
+        "source": 4,
+        "target": 8
+    },
+    {
+        "source": 6,
+        "target": 9
+    },
+    {
+        "source": 6,
+        "target": 10
+    },
+    {
+        "source": 6,
+        "target": 11
+    },
+    {
+        "source": 6,
+        "target": 12
     }
 ];
 
 // Diagram container
 var svg = d3.select("body").append("svg")
     .attr("width", "100%")
-    .attr("height", "120%");
+    .attr("height", "140%");
 
 // Starting positions
 var startingX = 300,
@@ -45,6 +121,8 @@ var startingX = 300,
 nodes.forEach(function(node, i){
     node.x = null;
     node.y = null;
+    node.sourceCount = 0;
+    node.targetCount = 0;
 
     if(node.isTrunk){
         node.x = startingX;
@@ -151,14 +229,14 @@ function drawLine(location1, location2){
 
 
 function getNewSourceLocation(targetNode){
-    // TODO: determine where node sould exist based on other nodes
-    return [targetNode.x + 100, targetNode.y - 100];
+    targetNode.sourceCount += 1;
+    return [targetNode.x + (100*targetNode.sourceCount), targetNode.y - 100];
 }
 
 
 function getNewTargetLocation(sourceNode){
-    // TODO: determine where node sould exist based on other nodes
-    return [sourceNode.x + 100, sourceNode.y + 100];
+    sourceNode.targetCount += 1;
+    return [sourceNode.x + (100*sourceNode.targetCount), sourceNode.y + 100];
 }
 
 
