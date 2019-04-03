@@ -2,39 +2,33 @@ var nodes = [
     {
         "name": "Node1",
         "id": 1,
-        "isTrunk": true,
-        "x": null,
-        "y": null,
-        "isDrawn": false
+        "isTrunk": true
     },
     {
         "name": "Node2",
         "id": 2,
-        "isTrunk": true,
-        "x": null,
-        "y": null,
-        "isDrawn": false
+        "isTrunk": true
     },
     {
         "name": "Node3",
         "id": 3,
-        "isTrunk": false,
-        "x": null,
-        "y": null,
-        "isDrawn": false
+        "isTrunk": false
+    },
+    {
+        "name": "Node4",
+        "id": 4,
+        "isTrunk": false
     }
 ];
 
 var links = [
     {
         "source": 1,
-        "target": 2,
-        "isDrawn": false
+        "target": 2
     },
     {
         "source": 1,
-        "target": 3,
-        "isDrawn": false
+        "target": 3
     }
 ];
 
@@ -49,10 +43,22 @@ var startingX = 300,
 
 // Draw tree tree trunk
 nodes.forEach(function(node, i){
+    node.x = null;
+    node.y = null;
+
     if(node.isTrunk){
         node.x = startingX;
         node.y = startingY+(i*100);
     }
+
+    // Init additional parameters
+    node.isDrawn = false;
+});
+
+
+// Init additional parameters
+links.forEach(function(link){
+    link.isDrawn = false;
 });
 
 
