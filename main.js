@@ -1,13 +1,13 @@
 var nodes = [
     {
-        "name": "Node1",
-        "id": 1,
+        "name": "Node2",
+        "id": 2,
         "isTrunk": true
     },
     {
-        "name": "Node2",
-        "id": 2,
-        "isTrunk": false
+        "name": "Node1",
+        "id": 1,
+        "isTrunk": true
     },
     {
         "name": "Node3",
@@ -63,12 +63,12 @@ var nodes = [
 
 var links = [
     {
-        "source": 1,
-        "target": 2
+        "source": 2,
+        "target": 1
     },
     {
-        "source": 1,
-        "target": 3
+        "source": 3,
+        "target": 1
     },
     {
         "source": 1,
@@ -183,6 +183,7 @@ nodes.forEach(function(node){
             } else {
                 // Draw line between existing nodes
                 var targetLocation = [getNodeById(links[x].target).x, getNodeById(links[x].target).y];
+                console.log("drawing line between "+node.name+" and "+getNodeById(links[x].target).name);
                 drawLine([node.x, node.y], targetLocation);
             }
 
