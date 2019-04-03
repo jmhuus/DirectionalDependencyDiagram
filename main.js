@@ -4,32 +4,37 @@ var nodes = [
         "id": 1,
         "isTrunk": true,
         "x": null,
-        "y": null
+        "y": null,
+        "isDrawn": false
     },
     {
         "name": "Node2",
         "id": 2,
         "isTrunk": true,
         "x": null,
-        "y": null
+        "y": null,
+        "isDrawn": false
     },
     {
         "name": "Node3",
         "id": 3,
         "isTrunk": false,
         "x": null,
-        "y": null
+        "y": null,
+        "isDrawn": false
     }
 ];
 
 var links = [
     {
         "source": 1,
-        "target": 2
+        "target": 2,
+        "isDrawn": false
     },
     {
         "source": 1,
-        "target": 3
+        "target": 3,
+        "isDrawn": false
     }
 ];
 
@@ -38,14 +43,18 @@ var svg = d3.select("body").append("svg")
     .attr("width", "100%")
     .attr("height", "120%");
 
+// Starting positions
+var startingX = 300,
+    startingY = 300;
+
 // Draw tree tree trunk
-nodes.forEach(function(node){
-    var startingX = 300,
-        startingY = 300;
+nodes.forEach(function(node, i){
     if(node.isTrunk){
-        drawNode(svg, [startingX, startingY]);
+        node.x = startingX;
+        node.y = startingY+(i*100);
     }
 });
+
 
 //This is the accessor function we talked about above
 var lineFunction = d3.line()
@@ -57,48 +66,63 @@ nodes.forEach(function(node){
     // Parent nodes
     var x;
     for(x=0; x<links.length; x++){
-        if(node.id == links[x].target){
-            console.log("parent found: "+node.id);
+        if(node.id == links[x].target && !(links[0].isDrawn)){
             if(getNodeById(links[x].source).x == null){
                 // Draw line, draw node, store node location
                 var sourceLocation = getNewSourceLocation(node);
-                drawLine([node.x, node.y], sourceLocation);
-                drawNode(sourceLocation, node);
                 getNodeById(links[x].source).x = sourceLocation[0];
                 getNodeById(links[x].source).y = sourceLocation[1];
+                drawLine([node.x, node.y], sourceLocation);
+                if(!getNodeById(links[x].source).isDrawn){
+                    drawNode(getNodeById(links[x].source));
+                    getNodeById(links[x].source).isDrawn = true;
+                }
             } else {
-                // Draw line between existin nodes
+                // Draw line between existing nodes
                 var sourceLocation = [getNodeById(links[x].source).x, getNodeById(links[x].source).x];
                 drawLine([node.x, node.y], sourceLocation);
             }
+
+            links[x].isDrawn = true;
         }
 
-        if(node.id == links[x].source){
-            console.log("child found: "+node.id);
+        if(node.id == links[x].source && !(links[x].isDrawn)){
             if(getNodeById(links[x].target).x == null){
                 var targetLocation = getNewTargetLocation(node);
-                drawLine([node.x, node.y], targetLocation);
-                drawNode(targetLocation, node);
                 getNodeById(links[x].target).x = targetLocation[0];
                 getNodeById(links[x].target).y = targetLocation[1];
+                drawLine([node.x, node.y], targetLocation);
+                if(!getNodeById(links[x].target).isDrawn){
+                    drawNode(getNodeById(links[x].target));
+                    getNodeById(links[x].target).isDrawn = true;
+                }
             } else {
-                var targetLocation = [getNodeById(links[x].target).x, getNodeById(links[x].target.y)];
+                // Draw line between existing nodes
+                var targetLocation = [getNodeById(links[x].target).x, getNodeById(links[x].target).y];
                 drawLine([node.x, node.y], targetLocation);
             }
+
+            links[x].isDrawn = true;
         }
+    }
+
+
+    if(!node.isDrawn){
+        drawNode(node);
+        node.isDrawn = true;
     }
 });
 
 
-function drawNode(location, node){
+function drawNode(node){
     svg.append("circle")
-        .attr("cx", location[0])
-        .attr("cy", location[1])
+        .attr("cx", node.x)
+        .attr("cy", node.y)
         .attr("r", 10);
 
     svg.append("text")
-        .attr("x", location[0]+15)
-        .attr("y", location[1]+5)
+        .attr("x", node.x+15)
+        .attr("y", node.y+5)
         .text(node.name);
 }
 
@@ -120,15 +144,15 @@ function drawLine(location1, location2){
 }
 
 
-function getNewSourceLocation(node){
+function getNewSourceLocation(targetNode){
     // TODO: determine where node sould exist based on other nodes
-    return [node.x + 100, node.y - 150];
+    return [targetNode.x + 100, targetNode.y - 100];
 }
 
 
-function getNewTargetLocation(node){
+function getNewTargetLocation(sourceNode){
     // TODO: determine where node sould exist based on other nodes
-    return [node.x + 100, node.y + 150];
+    return [sourceNode.x + 100, sourceNode.y + 100];
 }
 
 
