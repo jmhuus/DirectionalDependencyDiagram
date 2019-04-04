@@ -1,9 +1,13 @@
-html, body {
-    height: 100%;
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
 }
 
-.line {
-    stroke: rgba(146,166,116,1);
-    stroke-width: 2;
-    fill: "none";
+.node text { font: 12px sans-serif; }
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
 }

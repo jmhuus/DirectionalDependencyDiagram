@@ -1,253 +1,72 @@
-var nodes = [
-    {
-        "name": "Node2",
-        "id": 2,
-        "isTrunk": true
-    },
-    {
-        "name": "Node1",
-        "id": 1,
-        "isTrunk": true
-    },
-    {
-        "name": "Node3",
-        "id": 3,
-        "isTrunk": false
-    },
-    {
-        "name": "Node4",
-        "id": 4,
-        "isTrunk": true
-    },
-    {
-        "name": "Node5",
-        "id": 5,
-        "isTrunk": false
-    },
-    {
-        "name": "Node6",
-        "id": 6,
-        "isTrunk": true
-    },
-    {
-        "name": "Node7",
-        "id": 7,
-        "isTrunk": false
-    },
-    {
-        "name": "Node8",
-        "id": 8,
-        "isTrunk": false
-    },
-    {
-        "name": "Node9",
-        "id": 9,
-        "isTrunk": true
-    },
-    {
-        "name": "Node10",
-        "id": 10,
-        "isTrunk": false
-    },
-    {
-        "name": "Node11",
-        "id": 11,
-        "isTrunk": false
-    },
-    {
-        "name": "Node12",
-        "id": 12,
-        "isTrunk": false
-    }
-];
+var treeData =
+  {
+    "name": "Top Level",
+    "children": [
+      {
+		"name": "Level 2: A",
+        "children": [
+          { "name": "Son of A" },
+          { "name": "Daughter of A" }
+        ]
+      },
+      { "name": "Level 2: B" }
+    ]
+  };
 
-var links = [
-    {
-        "source": 2,
-        "target": 1
-    },
-    {
-        "source": 3,
-        "target": 1
-    },
-    {
-        "source": 1,
-        "target": 4
-    },
-    {
-        "source": 4,
-        "target": 5
-    },
-    {
-        "source": 4,
-        "target": 6
-    },
-    {
-        "source": 4,
-        "target": 7
-    },
-    {
-        "source": 4,
-        "target": 8
-    },
-    {
-        "source": 6,
-        "target": 9
-    },
-    {
-        "source": 6,
-        "target": 10
-    },
-    {
-        "source": 6,
-        "target": 11
-    },
-    {
-        "source": 6,
-        "target": 12
-    }
-];
+// set the dimensions and margins of the diagram
+var margin = {top: 40, right: 90, bottom: 50, left: 90},
+    width = 660 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
-// Diagram container
+// declares a tree layout and assigns the size
+var treemap = d3.tree()
+    .size([width, height]);
+
+//  assigns the data to a hierarchy using parent-child relationships
+var nodes = d3.hierarchy(treeData);
+
+// maps the node data to the tree layout
+nodes = treemap(nodes);
+
+// append the svg obgect to the body of the page
+// appends a 'group' element to 'svg'
+// moves the 'group' element to the top left margin
 var svg = d3.select("body").append("svg")
-    .attr("width", "100%")
-    .attr("height", "140%");
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom),
+    g = svg.append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
 
-// Starting positions
-var startingX = 300,
-    startingY = 300;
+// adds the links between the nodes
+var link = g.selectAll(".link")
+    .data( nodes.descendants().slice(1))
+  .enter().append("path")
+    .attr("class", "link")
+    .attr("d", function(d) {
+       return "M" + d.x + "," + d.y
+         + "C" + d.x + "," + (d.y + d.parent.y) / 2
+         + " " + d.parent.x + "," +  (d.y + d.parent.y) / 2
+         + " " + d.parent.x + "," + d.parent.y;
+       });
 
-// Draw tree tree trunk
-nodes.forEach(function(node, i){
-    node.x = null;
-    node.y = null;
-    node.sourceCount = 0;
-    node.targetCount = 0;
+// adds each node as a group
+var node = g.selectAll(".node")
+    .data(nodes.descendants())
+  .enter().append("g")
+    .attr("class", function(d) {
+      return "node" +
+        (d.children ? " node--internal" : " node--leaf"); })
+    .attr("transform", function(d) {
+      return "translate(" + d.x + "," + d.y + ")"; });
 
-    if(node.isTrunk){
-        node.x = startingX;
-        node.y = startingY+(i*100);
-    }
+// adds the circle to the node
+node.append("circle")
+  .attr("r", 10);
 
-    // Init additional parameters
-    node.isDrawn = false;
-});
-
-
-// Init additional parameters
-links.forEach(function(link){
-    link.isDrawn = false;
-});
-
-
-//This is the accessor function we talked about above
-var lineFunction = d3.line()
-        .x(function(d) { return d.x; })
-        .y(function(d) { return d.y; });
-
-
-nodes.forEach(function(node){
-    // Parent nodes
-    var x;
-    for(x=0; x<links.length; x++){
-        if(node.id == links[x].target && !(links[0].isDrawn)){
-            if(getNodeById(links[x].source).x == null){
-                // Draw line, draw node, store node location
-                var sourceLocation = getNewSourceLocation(node);
-                getNodeById(links[x].source).x = sourceLocation[0];
-                getNodeById(links[x].source).y = sourceLocation[1];
-                drawLine([node.x, node.y], sourceLocation);
-                if(!getNodeById(links[x].source).isDrawn){
-                    drawNode(getNodeById(links[x].source));
-                    getNodeById(links[x].source).isDrawn = true;
-                }
-            } else {
-                // Draw line between existing nodes
-                var sourceLocation = [getNodeById(links[x].source).x, getNodeById(links[x].source).x];
-                drawLine([node.x, node.y], sourceLocation);
-            }
-
-            links[x].isDrawn = true;
-        }
-
-        if(node.id == links[x].source && !(links[x].isDrawn)){
-            if(getNodeById(links[x].target).x == null){
-                var targetLocation = getNewTargetLocation(node);
-                getNodeById(links[x].target).x = targetLocation[0];
-                getNodeById(links[x].target).y = targetLocation[1];
-                drawLine([node.x, node.y], targetLocation);
-                if(!getNodeById(links[x].target).isDrawn){
-                    drawNode(getNodeById(links[x].target));
-                    getNodeById(links[x].target).isDrawn = true;
-                }
-            } else {
-                // Draw line between existing nodes
-                var targetLocation = [getNodeById(links[x].target).x, getNodeById(links[x].target).y];
-                console.log("drawing line between "+node.name+" and "+getNodeById(links[x].target).name);
-                drawLine([node.x, node.y], targetLocation);
-            }
-
-            links[x].isDrawn = true;
-        }
-    }
-
-
-    if(!node.isDrawn){
-        drawNode(node);
-        node.isDrawn = true;
-    }
-});
-
-
-function drawNode(node){
-    svg.append("circle")
-        .attr("cx", node.x)
-        .attr("cy", node.y)
-        .attr("r", 10);
-
-    svg.append("text")
-        .attr("x", node.x+15)
-        .attr("y", node.y+5)
-        .text(node.name);
-}
-
-
-function getNodeById(id){
-    var i;
-    for(i=0; i<nodes.length; i++){
-        if(nodes[i].id == id){
-            return nodes[i];
-        }
-    }
-}
-
-
-function drawLine(location1, location2){
-    svg.append("path")
-        .attr("d", lineFunction([{"x":location1[0], "y":location1[1]}, {"x":location2[0], "y":location2[1]}]))
-        .attr("class", "line");
-}
-
-
-function getNewSourceLocation(targetNode){
-    targetNode.sourceCount += 1;
-    return [targetNode.x + (100*targetNode.sourceCount), targetNode.y - 100];
-}
-
-
-function getNewTargetLocation(sourceNode){
-    sourceNode.targetCount += 1;
-    return [sourceNode.x + (100*sourceNode.targetCount), sourceNode.y + 100];
-}
-
-
-
-
-
-
-
-
-
-
-
-//
+// adds the text to the node
+node.append("text")
+  .attr("dy", ".35em")
+  .attr("y", function(d) { return d.children ? -20 : 20; })
+  .style("text-anchor", "middle")
+  .text(function(d) { return d.data.name; });
