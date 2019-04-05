@@ -28,9 +28,9 @@ var nodes = d3.hierarchy(treeData);
 // maps the node data to the tree layout
 nodes = treemap(nodes);
 
-console.log(nodes.descendants().slice(2));
+console.log(nodes);
 
-// append the svg obgect to the body of the page
+// append the svg object to the body of the page
 var svg = d3.select("body").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom);
