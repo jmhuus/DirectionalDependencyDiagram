@@ -28,6 +28,8 @@ var nodes = d3.hierarchy(treeData);
 // maps the node data to the tree layout
 nodes = treemap(nodes);
 
+console.log(nodes.descendants().slice(2));
+
 // append the svg obgect to the body of the page
 var svg = d3.select("body").append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -57,8 +59,7 @@ var node = g.selectAll(".node")
     .enter()
     .append("g")
         .attr("class", function(d) {
-            return "node" +
-            (d.children ? " node--internal" : " node--leaf");
+            return "node" + (d.children ? " node--internal" : " node--leaf");
         })
         .attr("transform", function(d) {
             return "translate(" + d.x + "," + d.y + ")";
@@ -66,14 +67,18 @@ var node = g.selectAll(".node")
 
 // adds the circle to the node
 node.append("circle")
-  .attr("r", 10);
+    .attr("r", 10);
 
 // adds the text to the node
 node.append("text")
-  .attr("dy", ".35em")
-  .attr("y", function(d) { return d.children ? -20 : 20; })
-  .style("text-anchor", "middle")
-  .text(function(d) { return d.data.name; });
+    .attr("dy", ".35em")
+    .attr("y", function(d){
+        return d.children ? -20 : 20;
+    })
+    .style("text-anchor", "middle")
+    .text(function(d) { return d.data.name; });
+
+
 
 
 
