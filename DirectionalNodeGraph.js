@@ -17,6 +17,7 @@ var treeData = [
 ];
 
 
+
 class DirectionalNodeGraph{
     constructor(data){
         this.nodes = data;
@@ -25,11 +26,11 @@ class DirectionalNodeGraph{
     // Sets x,y locations for all nodes
     getDirectionalNodesGraph(){
         for (var i = 0; i < this.nodes.length; i++) {
-            if(this.nodes[i].parents){
-                nodeHeight = 0;
-                nodeWidth = 0;
-                for (var x = 0; x < this.nodes.length; x++) {
-                    var nodeSize = getNodeSize(getNodeById(this.nodes[x].id));
+            if(this.nodes[i].parents.length > 0){
+                var nodeHeight = 0;
+                var nodeWidth = 0;
+                for (var x = 0; x < this.nodes[i].parents.length-1; x++) {
+                    var nodeSize = getNodeSize(getNodeById(this.nodes[i].parents[x].id));
                     nodeHeight += nodeSize[0];
                     nodeWidth += nodeSize[1];
                 }
@@ -53,25 +54,22 @@ class DirectionalNodeGraph{
         if(!node.parents){return [1,1];}
 
 
+        // Calculate each node height and width
         var nodeHeight = 0;
         var nodeWidth = 0;
         for (var i = 0; i < node.parents.length; i++) {
-            if(node.parents){
-                for (var x = 0; x < this.nodes.length; x++) {
-                    var nodeSize = getNodeSize(getNodeById(this.nodes[x].id));
-                    nodeHeight += nodeSize[0];
-                    nodeWidth += nodeSize[1];
-                }
+            for (var x = 0; x < this.nodes.length; x++) {
+                var nodeSize = getNodeSize(getNodeById(this.nodes[x].id));
+                nodeHeight += nodeSize[0];
+                nodeWidth += nodeSize[1];
             }
         }
     }
-
-
 }
 
 
 let directionalNodeGraph = new DirectionalNodeGraph(treeData);
-console.log(directionalNodeGraph.getNodesLength());
+console.log(directionalNodeGraph.getDirectionalNodesGraph());
 
 
 
