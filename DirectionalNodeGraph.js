@@ -29,8 +29,8 @@ class DirectionalNodeGraph{
             if(this.nodes[i].parents.length > 0){
                 var nodeHeight = 0;
                 var nodeWidth = 0;
-                for (var x = 0; x < this.nodes[i].parents.length-1; x++) {
-                    var nodeSize = getNodeSize(getNodeById(this.nodes[i].parents[x].id));
+                for (var x = 0; x < this.nodes[i].parents.length; x++) {
+                    var nodeSize = this.getNodeSize(this.getNodeById(this.nodes[i].parents[x]));
                     nodeHeight += nodeSize[0];
                     nodeWidth += nodeSize[1];
                 }
@@ -59,7 +59,7 @@ class DirectionalNodeGraph{
         var nodeWidth = 0;
         for (var i = 0; i < node.parents.length; i++) {
             for (var x = 0; x < this.nodes.length; x++) {
-                var nodeSize = getNodeSize(getNodeById(this.nodes[x].id));
+                var nodeSize = this.getNodeSize(this.getNodeById(this.nodes[x].id));
                 nodeHeight += nodeSize[0];
                 nodeWidth += nodeSize[1];
             }
