@@ -43,6 +43,11 @@ var treeData = [
         "name": "Node 9",
         "id": 9,
         "parents": [6,7,8,5]
+    },
+    {
+        "name": "Node 10",
+        "id": 10,
+        "parents": [9,5]
     }
 ];
 
@@ -59,8 +64,8 @@ class DirectionalNodeGraph{
 
     getDirectionalNodeGraph(){
         this.setNodeWidth();
+        console.log(this.nodes.forEach(function(node){console.log(node);}));
         // setNodePositions();
-        this.nodes.forEach(function(node){ console.log(node);});
     }
 
     getNodeById(id){
@@ -129,31 +134,24 @@ class DirectionalNodeGraph{
 
     // DFS to count the number of paths available between a node and one of it's parents
     getPathsCountBetweenTwoNodes(rootNode, targetNode){
-        return 1;
-        // var visitedNodes = [];
-        //
-        // for (var i = 0; i < rootNode.parents.length; i++) {
-        //     visitedNodes.push(rootNode.parents[i]);
-        //     if(isPath(this.getNodeById(rootNode.parents[i]), targetNode, visitedNodes)){
-        //         return true;
-        //     }
-        // }
-    }
-    isPath(rootNode, targetNode, visitedNodes){
-
-        if(rootNode.id === targetNode.id){return true;}
-
+        var pathCount = 0;
         for (var i = 0; i < rootNode.parents.length; i++) {
-            if(isPath(this.getNodeById(rootNode.parents[i]), targetNode, visitedNodes)){
-                return true;
-            }
+            pathCount += this.countPaths(this.getNodeById(rootNode.parents[i]), targetNode);
         }
 
-        return false;
+        return pathCount;
     }
+    countPaths(rootNode, targetNode){
+        // Target found, return path count of 1
+        if(rootNode.id === targetNode.id){return 1;}
 
+        var pathCount = 0;
+        for (var i = 0; i < rootNode.parents.length; i++) {
+            pathCount += this.countPaths(this.getNodeById(rootNode.parents[i]), targetNode);
+        }
 
-
+        return pathCount;
+    }
 }
 
 
