@@ -64,8 +64,7 @@ class DirectionalNodeGraph{
 
     getDirectionalNodeGraph(){
         this.setNodeWidth();
-        console.log(this.nodes.forEach(function(node){console.log(node);}));
-        // setNodePositions();
+        this.setNodePositions();
     }
 
     getNodeById(id){
@@ -151,6 +150,62 @@ class DirectionalNodeGraph{
         }
 
         return pathCount;
+    }
+
+    // Recursively set each node layer
+    // TODO: encorporate setting node layers into getNodeWidth()
+    setNodeLayer(){
+        // Reset visited flag
+        this.nodes.forEach(function(node){
+            node.visited = false;
+        });
+
+        // Set layer for each node
+        var startingLayer = 0;
+        for (var x = 0; x < this.nodes.length; i++) {
+            if (this.nodes[x].visited === false) {
+                this.nodes[x].layer = startingLayer;
+                for (var i = 0; i < this.nodes[x].parents.length; i++) {
+                    // Set layer position
+
+                    this.setParentLayers(this.getNodeById(this.nodes[x].parents[i]), startingLayer+1);
+                }
+            }
+        }
+    }
+    // TODO: ensure that child nodes are immediate node memebers!!
+    setParentLayers(node, layerPos){
+        for (var i = 0; i < node.parents.length; i++) {
+            this.getNodeById(node.parents[i]).visited = true;
+            this.getNodeById(node.parents[i]).layer = layerPos;
+            for (var x = 0; x < this.getNodeById(node.parents[i]).parents.length; x++) {
+                this.setParentLayers(this.getNodeById(node.parents[i]).parents[x], layerPos+1);
+            }
+        }
+    }
+    setChildLayers(node, layerPos){
+        for (var i = 0; i < this.nodes.length; i++) {
+            for (var x = 0; x < this.nodes[i].parents.length; x++) {
+
+                // TODO: ensure that child nodes are immediate node memebers
+                if (this.getPathsCountBetweenTwoNodes(this.getNodeById(this.nodes[i].parents[x]), node) !== 0) {
+                    continue;
+                }
+
+                if (node.id === this.nodes[i].parents[x]) {
+                    this.getNodeById(this.nodes[i].parents[x]).visited = true;
+                    this.getNodeById(this.nodes[i].parents[x]).layer = layerPos;
+                    this.setChildLayers(this.getNodeById(this.nodes[i].parents[x]), layerPos-1);
+                }
+            }
+        }
+    }
+
+    // Uses node widths to position node x,y coordinates
+    setNodePositions(){
+        this.nodes.forEach(function(node){
+
+        });
     }
 }
 
