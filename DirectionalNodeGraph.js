@@ -84,7 +84,8 @@ var treeData = [
 
 
 class DirectionalNodeGraph{
-    constructor(data){
+    constructor(data, pixelWidth){
+        this.pixelWidth = pixelWidth;
         this.nodes = data;
         this.nodes.forEach(function(node){
             node.visited = false;
@@ -95,6 +96,7 @@ class DirectionalNodeGraph{
     getDirectionalNodeGraph(){
         this.setNodeBlockWidth();
         this.setNodeLayers();
+        this.setNodeWidth();
         this.nodes.forEach(function(node){
             console.log(node);
         });
@@ -238,16 +240,43 @@ class DirectionalNodeGraph{
         }
     }
 
-    // // Uses node blockWidths to position node x,y coordinates
-    // setNodePositions(){
-    //     this.nodes.forEach(function(node){
-    //
-    //     });
-    // }
+    // Builds the node width, which represents the distance from previous node on the same layer
+    setNodeWidth(){
+        var maxWidth = 0;
+
+        // Use node blockWidth, rootWidth, and pixelWidth to set node width
+        for (var i = 0; i < this.nodes.length; i++) {
+            var rootWidth = this.nodes[i].blockWidth;
+            for (var x = 0; x < this.nodes[i].parents.length; x++) {
+                var parentNode = this.getNodeById(this.nodes[i].parents[x]);
+                parentNode.width = this.pixelWidth * ((parentNode.blockWidth/rootWidth) - ((parentNode.blockWidth/rootWidth)/2));
+            }
+
+            // Find the max width while iterating through nodes
+            if (rootWidth > maxWidth){
+                maxWidth = rootWidth;
+            }
+        }
+
+        // Nodes that are not the parent of anything have a node with equal to
+        for (var i = 0; i < this.nodes.length; i++) {
+            if (!this.nodes[i].hasOwnProperty("width")) {
+                console.log("node: "+this.nodes[i].id, "block width: "+this.nodes[i].blockWidth, "maxWidth: "+maxWidth);
+                this.nodes[i].width = this.pixelWidth * ((this.nodes[i].blockWidth/maxWidth) - ((this.nodes[i].blockWidth/maxWidth)/2))
+            }
+        }
+    }
+
+    // Uses node blockWidths to position node x,y coordinates
+    setNodePositions(){
+        this.nodes.forEach(function(node){
+
+        });
+    }
 }
 
 
-let directionalNodeGraph = new DirectionalNodeGraph(treeData);
+let directionalNodeGraph = new DirectionalNodeGraph(treeData, 1000);
 directionalNodeGraph.getDirectionalNodeGraph();
 
 
