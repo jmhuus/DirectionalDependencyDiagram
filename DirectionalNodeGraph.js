@@ -93,7 +93,7 @@ class DirectionalNodeGraph{
 
 
     getDirectionalNodeGraph(){
-        this.setNodeWidth();
+        this.setNodeBlockWidth();
         this.setNodeLayers();
         this.nodes.forEach(function(node){
             console.log(node);
@@ -108,59 +108,59 @@ class DirectionalNodeGraph{
         }
     }
 
-    // Calculates the width of each node based on the number parent nodes
-    setNodeWidth(){
+    // Calculates the blockWidth of each node based on the number parent nodes
+    setNodeBlockWidth(){
         for (var i = 0; i < this.nodes.length; i++) {
             if (this.nodes[i].visited === false) {
 
-                // Leaf node, width of 1
+                // Leaf node, blockWidth of 1
                 if(this.nodes[i].parents.length===0){
-                    this.nodes[i].width = 1;
+                    this.nodes[i].blockWidth = 1;
                     this.nodes[i].visited = true;
                     continue;
                 }
 
-                // Node width = sum widths of parents
-                var nodeWidth = 0;
+                // Node blockWidth = sum blockWidths of parents
+                var nodeBlockWidth = 0;
                 for (var x = 0; x < this.nodes[i].parents.length; x++) {
                     // Only sum parent nodes that are immediately related
                     // If there are multiple paths to a parent, then don't sum
                     if (this.getPathsCountBetweenTwoNodes(this.nodes[i], this.getNodeById(this.nodes[i].parents[x])) === 1) {
-                        nodeWidth += this.getNodeWidth(this.getNodeById(this.nodes[i].parents[x]));
+                        nodeBlockWidth += this.getNodeBlockWidth(this.getNodeById(this.nodes[i].parents[x]));
                     }
                 }
-                this.nodes[i].width = nodeWidth;
+                this.nodes[i].blockWidth = nodeBlockWidth;
                 this.nodes[i].visited = true;
             }
         }
     }
 
 
-    // Calculate widths for all nodes
-    getNodeWidth(node){
+    // Calculate blockWidths for all nodes
+    getNodeBlockWidth(node){
         // Node already visited, skip
-        if(node.visited){return node.width;}
+        if(node.visited){return node.blockWidth;}
 
-        // Leaf node; width = 1
+        // Leaf node; blockWidth = 1
         if(node.parents.length===0){
-            node.width = 1;
+            node.blockWidth = 1;
             node.visited = true;
             return 1;
         }
 
 
-        // Add all parent node widths
-        var nodeWidth = 0;
+        // Add all parent node blockWidths
+        var nodeBlockWidth = 0;
         for (var x = 0; x < node.parents.length; x++) {
             // Only sum parent nodes that are immediately related
             // If there are multiple paths to a parent, then don't sum
             if (this.getPathsCountBetweenTwoNodes(node, this.getNodeById(node.parents[x])) === 1) {
-                nodeWidth += this.getNodeWidth(node.parents[x]);
+                nodeBlockWidth += this.getNodeblockWidth(node.parents[x]);
             }
         }
         node.visited = true;
-        node.width = nodeWidth;
-        return nodeWidth;
+        node.blockWidth = nodeBlockWidth;
+        return nodeBlockWidth;
     }
 
 
@@ -186,7 +186,6 @@ class DirectionalNodeGraph{
     }
 
     // Recursively set each node layer
-    // TODO: encorporate setting node layers into getNodeWidth()
     setNodeLayers(){
         // Reset visited flag
         this.nodes.forEach(function(node){
@@ -239,7 +238,7 @@ class DirectionalNodeGraph{
         }
     }
 
-    // // Uses node widths to position node x,y coordinates
+    // // Uses node blockWidths to position node x,y coordinates
     // setNodePositions(){
     //     this.nodes.forEach(function(node){
     //
