@@ -64,7 +64,7 @@ class DirectionalNodeGraph{
 
     getDirectionalNodeGraph(){
         this.setNodeWidth();
-        this.setNodePositions();
+        this.setNodeLayers();
     }
 
     getNodeById(id){
@@ -154,7 +154,7 @@ class DirectionalNodeGraph{
 
     // Recursively set each node layer
     // TODO: encorporate setting node layers into getNodeWidth()
-    setNodeLayer(){
+    setNodeLayers(){
         // Reset visited flag
         this.nodes.forEach(function(node){
             node.visited = false;
@@ -162,32 +162,32 @@ class DirectionalNodeGraph{
 
         // Set layer for each node
         var startingLayer = 0;
-        for (var x = 0; x < this.nodes.length; i++) {
-            if (this.nodes[x].visited === false) {
-                this.nodes[x].layer = startingLayer;
-                for (var i = 0; i < this.nodes[x].parents.length; i++) {
-                    // Set layer position
-
-                    this.setParentLayers(this.getNodeById(this.nodes[x].parents[i]), startingLayer+1);
-                }
-            }
-        }
+        this.nodes[9].layer = startingLayer;
+        this.nodes[9].visited = true;
+        this.setParentLayers(this.nodes[9], startingLayer);
     }
-    // TODO: ensure that child nodes are immediate node memebers!!
     setParentLayers(node, layerPos){
         for (var i = 0; i < node.parents.length; i++) {
-            this.getNodeById(node.parents[i]).visited = true;
-            this.getNodeById(node.parents[i]).layer = layerPos;
-            for (var x = 0; x < this.getNodeById(node.parents[i]).parents.length; x++) {
-                this.setParentLayers(this.getNodeById(node.parents[i]).parents[x], layerPos+1);
+
+            // Ensure that parent nodes are immediate node memebers
+            if (this.getPathsCountBetweenTwoNodes(node, this.getNodeById(node.parents[i])) !== 1) {
+                continue;
             }
+
+            // Set layer
+            this.getNodeById(node.parents[i]).visited = true;
+            this.getNodeById(node.parents[i]).layer = layerPos+1;
+
+            // Set parent layers
+            this.setParentLayers(this.getNodeById(node.parents[i]), layerPos+1);
+
         }
     }
     setChildLayers(node, layerPos){
         for (var i = 0; i < this.nodes.length; i++) {
             for (var x = 0; x < this.nodes[i].parents.length; x++) {
 
-                // TODO: ensure that child nodes are immediate node memebers
+                // Ensure that child nodes are immediate node memebers
                 if (this.getPathsCountBetweenTwoNodes(this.getNodeById(this.nodes[i].parents[x]), node) !== 0) {
                     continue;
                 }
@@ -201,12 +201,12 @@ class DirectionalNodeGraph{
         }
     }
 
-    // Uses node widths to position node x,y coordinates
-    setNodePositions(){
-        this.nodes.forEach(function(node){
-
-        });
-    }
+    // // Uses node widths to position node x,y coordinates
+    // setNodePositions(){
+    //     this.nodes.forEach(function(node){
+    //
+    //     });
+    // }
 }
 
 
