@@ -65,6 +65,9 @@ class DirectionalNodeGraph{
     getDirectionalNodeGraph(){
         this.setNodeWidth();
         this.setNodeLayers();
+        this.nodes.forEach(function(node){
+            console.log(node);
+        });
     }
 
     getNodeById(id){
@@ -161,16 +164,18 @@ class DirectionalNodeGraph{
         });
 
         // Set layer for each node
+        // TODO: eventually account for multiple node diagrams; diagrams that are separate from each other
         var startingLayer = 0;
-        this.nodes[9].layer = startingLayer;
-        this.nodes[9].visited = true;
-        this.setParentLayers(this.nodes[9], startingLayer);
+        this.nodes[4].layer = startingLayer;
+        this.nodes[4].visited = true;
+        this.setParentLayers(this.nodes[4], startingLayer);
+        this.setChildLayers(this.nodes[4], startingLayer);
     }
     setParentLayers(node, layerPos){
         for (var i = 0; i < node.parents.length; i++) {
 
             // Ensure that parent nodes are immediate node memebers
-            if (this.getPathsCountBetweenTwoNodes(node, this.getNodeById(node.parents[i])) !== 1) {
+            if ((this.getPathsCountBetweenTwoNodes(node, this.getNodeById(node.parents[i])) !== 1) || this.getNodeById(node.parents[i]).visited) {
                 continue;
             }
 
@@ -188,14 +193,17 @@ class DirectionalNodeGraph{
             for (var x = 0; x < this.nodes[i].parents.length; x++) {
 
                 // Ensure that child nodes are immediate node memebers
-                if (this.getPathsCountBetweenTwoNodes(this.getNodeById(this.nodes[i].parents[x]), node) !== 0) {
+                if (this.getPathsCountBetweenTwoNodes(this.nodes[i], this.getNodeById(this.nodes[i].parents[x])) !== 1) {
                     continue;
                 }
 
+                // Connection found, set layer
                 if (node.id === this.nodes[i].parents[x]) {
-                    this.getNodeById(this.nodes[i].parents[x]).visited = true;
-                    this.getNodeById(this.nodes[i].parents[x]).layer = layerPos;
-                    this.setChildLayers(this.getNodeById(this.nodes[i].parents[x]), layerPos-1);
+                    this.nodes[i].visited = true;
+                    this.nodes[i].layer = layerPos-1;
+                    var randNode = this.nodes[i];
+                    this.setChildLayers(this.nodes[i], layerPos-1);
+                    this.setParentLayers(this.nodes[i], layerPos-1);
                 }
             }
         }
