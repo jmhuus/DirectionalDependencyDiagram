@@ -10,7 +10,9 @@ var margin = {top: 40, right: 90, bottom: 50, left: 90},
 // SVG container
 var svg = d3.select("body").append("svg")
     .attr("width", "100%")
-    .attr("height", "100%");
+    .attr("height", "100%")
+    .append("g")
+        .attr("transform", "translate("+margin.left+","+margin.top+")");
 
 // Draw links between nodes
 for (var i = 0; i < diagramNodes.length; i++) {
