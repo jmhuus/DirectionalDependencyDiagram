@@ -84,7 +84,8 @@ var treeData = [
 
 
 class DirectionalNodeGraph{
-    constructor(data, pixelWidth){
+    constructor(data, pixelWidth, layerHeight){
+        this.layerHeight = layerHeight;
         this.pixelWidth = pixelWidth;
         this.nodes = data;
         this.nodes.forEach(function(node){
@@ -96,7 +97,9 @@ class DirectionalNodeGraph{
     getDirectionalNodeGraph(){
         this.setNodeBlockWidth();
         this.setNodeLayers();
+        this.remapNodeLayersToBePositive();
         this.setNodeWidth();
+        this.setNodePositions();
         this.nodes.forEach(function(node){
             console.log(node);
         });
@@ -240,6 +243,25 @@ class DirectionalNodeGraph{
         }
     }
 
+    // Node layers can be negative or positive, remap to always be positive
+    remapNodeLayersToBePositive(){
+        // Locate lowest layer number
+        var lowestLayer = 0;
+        var largestLayer = 0;
+        for (var i = 0; i < this.nodes.length; i++) {
+            if (this.nodes[i].layer < lowestLayer) { lowestLayer = this.nodes[i].layer; }
+            if (this.nodes[i].layer > largestLayer) { largestLayer  = this.nodes[i].layer}
+        }
+
+        largestLayer += Math.abs(lowestLayer);
+
+        // Push each node layer up by abs(lowestLayer)
+        this.nodes.forEach(function(node){
+            node.layer += Math.abs(lowestLayer);
+            node.layer = largestLayer - node.layer;
+        });
+    }
+
     // Builds the node width, which represents the distance from previous node on the same layer
     setNodeWidth(){
         var maxWidth = 0;
@@ -269,14 +291,29 @@ class DirectionalNodeGraph{
 
     // Uses node blockWidths to position node x,y coordinates
     setNodePositions(){
-        this.nodes.forEach(function(node){
+        var layerWidths = {};
+        var node;
+        for (var i = 0; i < this.nodes.length; i++) {
+            node = this.nodes[i];
 
-        });
+            // Append node width to layer width
+            if (layerWidths[node.layer] === undefined) {
+                layerWidths[node.layer] = node.width;
+            } else {
+                layerWidths[node.layer] += node.width;
+            }
+
+            // Node x
+            node.x = layerWidths[node.layer];
+
+            // Node y
+            node.y = node.layer * this.layerHeight;
+        }
     }
 }
 
 
-let directionalNodeGraph = new DirectionalNodeGraph(treeData, 1000);
+let directionalNodeGraph = new DirectionalNodeGraph(treeData, 1000, 75);
 directionalNodeGraph.getDirectionalNodeGraph();
 
 
