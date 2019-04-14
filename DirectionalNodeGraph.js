@@ -103,6 +103,8 @@ class DirectionalNodeGraph{
         this.nodes.forEach(function(node){
             console.log(node);
         });
+
+        return this.nodes;
     }
 
     getNodeById(id){
@@ -311,11 +313,6 @@ class DirectionalNodeGraph{
         }
     }
 }
-
-
-let directionalNodeGraph = new DirectionalNodeGraph(treeData, 1000, 75);
-directionalNodeGraph.getDirectionalNodeGraph();
-
 
 
 
