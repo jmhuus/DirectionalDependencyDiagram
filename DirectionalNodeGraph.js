@@ -266,28 +266,18 @@ class DirectionalNodeGraph{
 
     // Builds the node width, which represents the distance from previous node on the same layer
     setNodeWidth(){
+
+        // Find largest node width
         var maxWidth = 0;
-
-        // Use node blockWidth, rootWidth, and pixelWidth to set node width
         for (var i = 0; i < this.nodes.length; i++) {
-            var rootWidth = this.nodes[i].blockWidth;
-            for (var x = 0; x < this.nodes[i].parents.length; x++) {
-                var parentNode = this.getNodeById(this.nodes[i].parents[x]);
-                parentNode.width = this.pixelWidth * ((parentNode.blockWidth/rootWidth) - ((parentNode.blockWidth/rootWidth)/2));
-            }
-
-            // Find the max width while iterating through nodes
-            if (rootWidth > maxWidth){
-                maxWidth = rootWidth;
+            if (this.nodes[i].blockWidth > maxWidth) {
+                maxWidth = this.nodes[i].blockWidth;
             }
         }
 
         // Nodes that are not the parent of anything have a node with equal to
         for (var i = 0; i < this.nodes.length; i++) {
-            if (!this.nodes[i].hasOwnProperty("width")) {
-                console.log("node: "+this.nodes[i].id, "block width: "+this.nodes[i].blockWidth, "maxWidth: "+maxWidth);
-                this.nodes[i].width = this.pixelWidth * ((this.nodes[i].blockWidth/maxWidth) - ((this.nodes[i].blockWidth/maxWidth)/2))
-            }
+            this.nodes[i].width = this.pixelWidth * ((this.nodes[i].blockWidth/maxWidth) - ((this.nodes[i].blockWidth/maxWidth)/2))
         }
     }
 
