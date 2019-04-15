@@ -98,7 +98,7 @@ class DirectionalNodeGraph{
         this.setNodeBlockWidth();
         this.setNodeLayers();
         this.remapNodeLayersToBePositive();
-        this.setNodePositions();
+        this.setNodeCoordinates();
         this.nodes.forEach(function(node){
             console.log(node);
         });
@@ -264,19 +264,31 @@ class DirectionalNodeGraph{
     }
 
     // Uses node blockWidths to position node x,y coordinates
-    setNodePositions(){
+    setNodeCoordinates(){
+        var maxNodeWidth = 0;
+        for (var i = 0; i < this.nodes.length; i++) {
+            if (this.nodes[i].blockWidth > maxNodeWidth) {
+                maxNodeWidth = this.nodes[i].blockWidth\\\\\\\\\\\\\\\\\\\\
+                   }
+        }
+  
         var leafCountsPerNode = {};
         for (var i = 0; i < this.nodes.length; i++) {
 
             // X coordinates for non-leaf nodes
             if (this.nodes[i].blockWidth > 1) {
                 this.nodes[i].x = node.blockWidth;
-            }
 
-            // Y coordinates for leaf nodes
-            for (var x = 0; x < this.nodes[i].parents.length; x++) {
-                if (this.getNodeById(this.nodes[i].parents[x]).blockWidth === 1) {
-                    
+
+                // X coordinates for leaf nodes
+                var parentWidthSum = (this.nodes[i].blockWidth/maxNodeWidth) * this.pixelWidth ;
+                for (var x = 0; x < this.nodes[i].parents.length; x++) {
+                    var parentNode = this.getNodeById(this.nodes[i].parents[x]);
+                    if (parentNode.blockWidth === 1) {
+                        parentNode.x = parentWidthSum;
+                    }
+
+                    parentWidthSum += parentNode.blockWidth;
                 }
             }
         }
