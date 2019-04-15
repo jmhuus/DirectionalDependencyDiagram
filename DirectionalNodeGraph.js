@@ -98,7 +98,6 @@ class DirectionalNodeGraph{
         this.setNodeBlockWidth();
         this.setNodeLayers();
         this.remapNodeLayersToBePositive();
-        this.setNodeWidth();
         this.setNodePositions();
         this.nodes.forEach(function(node){
             console.log(node);
@@ -264,42 +263,22 @@ class DirectionalNodeGraph{
         });
     }
 
-    // Builds the node width, which represents the distance from previous node on the same layer
-    setNodeWidth(){
-
-        // Find largest node width
-        var maxWidth = 0;
-        for (var i = 0; i < this.nodes.length; i++) {
-            if (this.nodes[i].blockWidth > maxWidth) {
-                maxWidth = this.nodes[i].blockWidth;
-            }
-        }
-
-        // Nodes that are not the parent of anything have a node with equal to
-        for (var i = 0; i < this.nodes.length; i++) {
-            this.nodes[i].width = this.pixelWidth * ((this.nodes[i].blockWidth/maxWidth) - ((this.nodes[i].blockWidth/maxWidth)/2))
-        }
-    }
-
     // Uses node blockWidths to position node x,y coordinates
     setNodePositions(){
-        var layerWidths = {};
-        var node;
+        var leafCountsPerNode = {};
         for (var i = 0; i < this.nodes.length; i++) {
-            node = this.nodes[i];
 
-            // Append node width to layer width
-            if (layerWidths[node.layer] === undefined) {
-                layerWidths[node.layer] = node.width;
-            } else {
-                layerWidths[node.layer] += node.width;
+            // X coordinates for non-leaf nodes
+            if (this.nodes[i].blockWidth > 1) {
+                this.nodes[i].x = node.blockWidth;
             }
 
-            // Node x
-            node.x = layerWidths[node.layer];
-
-            // Node y
-            node.y = node.layer * this.layerHeight;
+            // Y coordinates for leaf nodes
+            for (var x = 0; x < this.nodes[i].parents.length; x++) {
+                if (this.getNodeById(this.nodes[i].parents[x]).blockWidth === 1) {
+                    
+                }
+            }
         }
     }
 }
