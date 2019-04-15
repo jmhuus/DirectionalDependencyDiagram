@@ -268,29 +268,43 @@ class DirectionalNodeGraph{
         var maxNodeWidth = 0;
         for (var i = 0; i < this.nodes.length; i++) {
             if (this.nodes[i].blockWidth > maxNodeWidth) {
-                maxNodeWidth = this.nodes[i].blockWidth\\\\\\\\\\\\\\\\\\\\
+                maxNodeWidth = this.nodes[i].blockWidth;
                    }
         }
-  
+
         var leafCountsPerNode = {};
         for (var i = 0; i < this.nodes.length; i++) {
 
             // X coordinates for non-leaf nodes
             if (this.nodes[i].blockWidth > 1) {
-                this.nodes[i].x = node.blockWidth;
+                this.nodes[i].x = this.pixelWidth * (this.nodes[i].blockWidth / maxNodeWidth);
 
 
-                // X coordinates for leaf nodes
-                var parentWidthSum = (this.nodes[i].blockWidth/maxNodeWidth) * this.pixelWidth ;
+                // Count parent leaf nodes
+                var parentLeafNodeCount = 0;
                 for (var x = 0; x < this.nodes[i].parents.length; x++) {
-                    var parentNode = this.getNodeById(this.nodes[i].parents[x]);
-                    if (parentNode.blockWidth === 1) {
-                        parentNode.x = parentWidthSum;
+                    if (this.getNodeById(this.nodes[i].parents[x]).blockWidth === 1) {
+                        parentLeafNodeCount++;
                     }
+                }
 
-                    parentWidthSum += parentNode.blockWidth;
+                // Calculate parent leaf node available width
+                var availableParentLeafNodeWidth = this.pixelWidth * (parentLeafNodeCount / maxNodeWidth);
+                var startingLeafNodeX = (this.pixelWidth * (this.nodes[i].blockWidth / maxNodeWidth)) - (availableParentLeafNodeWidth / 2)
+                var allocatedSpacePerParentLeafNode = availableParentLeafNodeWidth / parentLeafNodeCount;
+
+
+                // X coordinate for leaf nodes
+                for (var x = 0; x < this.nodes[i].parents.length; x++) {
+                    if (this.getNodeById(this.nodes[i].parents[x]).blockWidth === 1) {
+                        this.getNodeById(this.nodes[i].parents[x]).x = startingLeafNodeX;
+                        startingLeafNodeX += allocatedSpacePerParentLeafNode;
+                    }
                 }
             }
+
+            // Y coordinate for all nodes
+            this.nodes[i].y = this.layerHeight * this.nodes[i].layer;
         }
     }
 }
