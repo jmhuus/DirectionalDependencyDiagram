@@ -35,9 +35,7 @@ var node = svg.selectAll(".node")
     .data(diagramNodes)
     .enter()
     .append("g")
-        .attr("class", function(d) {
-            return "node"+d.id;
-        })
+        .attr("class", "node")
         .attr("transform", function(d) {
             return "translate(" + d.x + "," + d.y + ")";
         });
@@ -49,7 +47,7 @@ node.append("circle")
 // Node title
 node.append("text")
     .attr("dy", ".35em")
-    .attr("y", "20")
+    .attr("y", "-20")
     .style("text-anchor", "middle")
     .text(function(d) { return d.name; });
 

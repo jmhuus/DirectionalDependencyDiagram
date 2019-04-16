@@ -1,16 +1,18 @@
 html, body {
     width: 100%;
     height: 100%;
+    background-color: rgb(31,36,39);
 }
 
 .node circle {
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 3px;
+  fill: rgb(120,120,120);
 }
 
 .node text {
-    font: 12px sans-serif; }
+    font-family : 'Yu Gothic';
+    font-size: 15px;
+    fill: rgb(146,166,116   );
+}
 
 .link {
   fill: none;
