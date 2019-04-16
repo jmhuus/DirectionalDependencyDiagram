@@ -51,7 +51,7 @@ node.append("text")
     .attr("dy", ".35em")
     .attr("y", "20")
     .style("text-anchor", "middle")
-    .text(function(d) { return d.id; });
+    .text(function(d) { return d.name; });
 
 // Function to retreive nodes by ID
 function getNodeById(id, nodes){
