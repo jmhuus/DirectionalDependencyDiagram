@@ -40,16 +40,18 @@ var node = svg.selectAll(".node")
             return "translate(" + d.x + "," + d.y + ")";
         });
 
-// Draw circle
-node.append("circle")
-    .attr("r", 10);
-
 // Node title
 node.append("text")
     .attr("dy", ".35em")
     .attr("y", "-20")
     .style("text-anchor", "middle")
     .text(function(d) { return d.name; });
+
+// Draw circle
+node.append("circle")
+    .attr("r", 10);
+
+
 
 // Function to retreive nodes by ID
 function getNodeById(id, nodes){
