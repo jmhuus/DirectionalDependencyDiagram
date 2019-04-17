@@ -1,4 +1,4 @@
-let directionalNodeGraph = new DirectionalNodeGraph(treeData, 1000, 75  );
+let directionalNodeGraph = new DirectionalNodeGraph(treeData, 700, 75  );
 var diagramNodes = directionalNodeGraph.getDirectionalNodeGraph();
 
 

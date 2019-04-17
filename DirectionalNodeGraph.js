@@ -20,14 +20,14 @@ var treeData = [
         "parents": [1,2,3]
     },
     {
-        "name": "##Tmp_Aggregate",
+        "name": "##Tmp_Consolidate",
         "id": 5,
         "parents": [4]
     },
     {
-        "name": "ServerTable1",
+        "name": "##Tmp_GatherLeadInfo",
         "id": 6,
-        "parents": []
+        "parents": [5,7,8,9]
     },
     {
         "name": "ServerTable7",
@@ -40,44 +40,14 @@ var treeData = [
         "parents": []
     },
     {
-        "name": "##Tmp_AppendLeadData",
+        "name": "ServerTable9",
         "id": 9,
-        "parents": [6,7,8,5]
+        "parents": []
     },
     {
-        "name": "##Tmp_AppendLeadData2",
+        "name": "##Tmp_Format",
         "id": 10,
-        "parents": [9,5]
-    },
-    {
-        "name": "ServerTable11",
-        "id": 11,
-        "parents": []
-    },
-    {
-        "name": "ServerTable12",
-        "id": 12,
-        "parents": []
-    },
-    {
-        "name": "ServerTable13",
-        "id": 13,
-        "parents": []
-    },
-    {
-        "name": "##Tmp_PrepareResult",
-        "id": 14,
-        "parents": [10,11,12,13]
-    },
-    {
-        "name": "##Tmp_FormatOutput",
-        "id": 15,
-        "parents": [14]
-    },
-    {
-        "name": "##Tmp_AggregateCheck",
-        "id": 16,
-        "parents": [5]
+        "parents": [6,5]
     }
 ];
 
