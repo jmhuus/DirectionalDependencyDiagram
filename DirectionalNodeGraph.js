@@ -201,10 +201,10 @@ class DirectionalNodeGraph{
         // Set layer for each node
         // TODO: eventually account for multiple node diagrams; diagrams that are separate from each other
         var startingLayer = 0;
-        this.nodes[4].layer = startingLayer;
-        this.nodes[4].visited = true;
-        this.setParentLayers(this.nodes[4], startingLayer);
-        this.setChildLayers(this.nodes[4], startingLayer);
+        this.nodes[0].layer = startingLayer;
+        this.nodes[0].visited = true;
+        this.setParentLayers(this.nodes[0], startingLayer);
+        this.setChildLayers(this.nodes[0], startingLayer);
     }
     setParentLayers(node, layerPos){
         for (var i = 0; i < node.parents.length; i++) {
