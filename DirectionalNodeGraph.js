@@ -48,6 +48,11 @@ var treeData = [
         "name": "##Tmp_Format",
         "id": 10,
         "parents": [6,5]
+    },
+    {
+        "name": "SELECT_RESULT",
+        "id": 11,
+        "parents": [1,5]
     }
 ];
 
@@ -266,7 +271,8 @@ class DirectionalNodeGraph{
 
                 // X coordinate for leaf nodes
                 for (var x = 0; x < this.nodes[i].parents.length; x++) {
-                    if (this.getNodeById(this.nodes[i].parents[x]).blockWidth === 1) {
+                    if (this.getNodeById(this.nodes[i].parents[x]).blockWidth === 1 &&
+                        this.getPathsCountBetweenTwoNodes(this.nodes[i], this.getNodeById(this.nodes[i].parents[x])) === 1) {
                         this.getNodeById(this.nodes[i].parents[x]).x = startingLeafNodeX;
                         startingLeafNodeX += allocatedSpacePerParentLeafNode;
                     }
